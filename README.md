@@ -123,8 +123,10 @@ TUggk9S4aDDyT7HxrEjqCDxFPXgEr4okW8
 
 </details>
 
-## Built on the original creators' work
+## Credits
 
-Maintained by [Renz1998](https://github.com/Renz1998), built from [nkchocoai/ComfyUI-Dart](https://github.com/nkchocoai/ComfyUI-Dart) and its contributors. Qwen, OpenMOSS, Hugging Face and ComfyUI retain credit for their models, formats and runtime. Studio is an independent community project.
+Prompt Mage Studio is maintained by [Renz1998](https://github.com/Renz1998). It includes Grimoire, Foundry and scene-assistance tools. **DART tag nodes and DART models are not included or required.** They are available separately in the [original Prompt Mage pack](https://github.com/Renz1998/ComfyUI-Prompt-Mage).
 
-[Full credits](CREDITS.md) · [GPL-3.0 license](LICENSE) · [Original Prompt Mage / DART tools](https://github.com/Renz1998/ComfyUI-Prompt-Mage)
+Studio's code lineage includes nkchocoai/ComfyUI-Dart and its contributors. This is source-code attribution, not a DART feature or dependency. Qwen, OpenMOSS, Hugging Face and ComfyUI retain credit for their models, formats and runtime.
+
+[Full credits and source history](CREDITS.md) · [GPL-3.0 license](LICENSE)

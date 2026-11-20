@@ -45,6 +45,8 @@ from .py.dart.openai_routes import register_openai_routes
 register_openai_routes()
 from .py.dart.deepseek_routes import register_deepseek_routes
 register_deepseek_routes()
+from .py.dart.venice_routes import register_venice_routes
+register_venice_routes()
 from .py.dart.gemini_routes import register_gemini_routes
 register_gemini_routes()
 from .py.dart.grimoire_routes import register_grimoire_routes

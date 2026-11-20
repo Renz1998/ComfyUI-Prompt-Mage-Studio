@@ -6,7 +6,7 @@ from pathlib import Path
 
 
 def credential_path(provider):
-    if provider not in ('openai','deepseek','gemini'):
+    if provider not in ('openai','deepseek','gemini','venice'):
         raise ValueError('Unknown API provider.')
     import folder_paths
     return Path(folder_paths.get_user_directory()) / 'prompt_mage_studio' / 'credentials' / (provider + '.json')

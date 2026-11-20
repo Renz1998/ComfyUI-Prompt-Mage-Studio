@@ -72,10 +72,10 @@ export function layoutGrimoire(root, {title,status,chats,history,summary,compose
     const applied=make('details','gm-applied');applied.append(make('summary','','Applied prompt'));if(targets){targets.title='Spell Scroll destination';applied.append(targets,active);modeBar.append(applied);}
     const production=button('Send brief → Foundry',invoke('Send brief to Foundry'));production.title='After agreeing on the project, prepare a saved production brief. One assistant request; no image generation.';modeBar.append(production);
     control(settings,'style_notes','Custom style notes');
-    control(settings,'assistant_backend','Assistant provider','Choose OpenAI or DeepSeek below to add an API key. Local Qwen needs no API key.');
+    control(settings,'assistant_backend','Assistant provider','Choose OpenAI, DeepSeek or Venice below to add an API key. Local Qwen needs no API key.');
     const keyMount=make('div');settings.append(keyMount);
     const keyHint=make('small','','Local mode uses your connected CLIP or installed Qwen. Select an API provider to reveal its saved-key controls.');settings.append(keyHint);
-    for(const [name,label]of [['openai_model','OpenAI model'],['deepseek_model','DeepSeek model'],['local_model','Local model'],['thinking','Thinking'],['max_tokens','Generation token limit'],['auto_compact','Automatically compact older messages'],['output_selection','Prompt format'],['json_field','JSON field'],['unload_after_generation','Unload local assistant after generation'],['width','Canvas width'],['height','Canvas height']])control(settings,name,label);
+    for(const [name,label]of [['openai_model','OpenAI model'],['deepseek_model','DeepSeek model'],['venice_model','Venice model'],['local_model','Local model'],['thinking','Thinking'],['max_tokens','Generation token limit'],['auto_compact','Automatically compact older messages'],['output_selection','Prompt format'],['json_field','JSON field'],['unload_after_generation','Unload local assistant after generation'],['width','Canvas width'],['height','Canvas height']])control(settings,name,label);
     const memory=make('details');memory.append(make('summary','','Conversation memory'));summary.style.cssText='';memory.append(summary,button('Edit summary',()=>{actions.get('Edit summary')?.();tab('Settings');}));
     const memoryEdit=make('details');memoryEdit.append(make('summary','','Advanced memory override'));control(memoryEdit,'summary_override','Summary override','Apply an edited summary on the next successful turn, then clear this field.');settings.append(memoryEdit);
     history.className='gm-history';history.style.cssText='';status.className='gm-status';
@@ -94,7 +94,7 @@ export function layoutGrimoire(root, {title,status,chats,history,summary,compose
     root.replaceChildren();root.append(style,header,tabs,status,chatPage,instructions,settings);tab('Chat');
     return {keyMount,attachmentMount,attachmentButtonMount,tab,setEditing(editing){cancelEdit.hidden=!editing;send.textContent=editing?'Send edited message':'Send';},sync(backend,busy,hasAnswer,hasFoundry=false){
         production.disabled=busy||!hasAnswer||!hasFoundry;production.title=hasFoundry?'Prepare the agreed production brief. One assistant request; no image render.':'Connect production_brief to Foundry first.';provider.title=backend+' · Open settings';send.disabled=busy;thinking.hidden=!field('thinking');thinking.disabled=busy;thinking.setAttribute('aria-pressed',String(Boolean(field('thinking')?.value)));thinking.textContent=field('thinking')?.value?'✧ Thinking · On':'✧ Thinking';
-        for(const b of bindings){b.sync();b.row.hidden=b.name==='openai_model'?backend!=='OpenAI API':b.name==='deepseek_model'?backend!=='DeepSeek API':b.name==='local_model'?backend!=='Local Qwen':b.name==='json_field'?field('output_selection')?.value!=='JSON field':false;}
+        for(const b of bindings){b.sync();b.row.hidden=b.name==='openai_model'?backend!=='OpenAI API':b.name==='deepseek_model'?backend!=='DeepSeek API':b.name==='venice_model'?backend!=='Venice API':b.name==='local_model'?backend!=='Local Qwen':b.name==='json_field'?field('output_selection')?.value!=='JSON field':false;}
         keyHint.hidden=backend!=='Local Qwen';memory.hidden=!summary.value;
     }};
 }

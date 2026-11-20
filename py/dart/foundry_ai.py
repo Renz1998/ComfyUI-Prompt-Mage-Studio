@@ -17,6 +17,9 @@ def encoder_for(config,clip=None):
     backend=config.get('assistant_backend','Local Qwen')
     if backend=='OpenAI API':return OpenAIEncoder(config.get('openai_model',DEFAULT_MODEL))
     if backend=='DeepSeek API':return DeepSeekEncoder(config.get('deepseek_model',DS_DEFAULT))
+    if backend=='Venice API':
+        from .venice_assistant import VeniceEncoder,DEFAULT_MODEL as VENICE_DEFAULT
+        return VeniceEncoder(config.get('venice_model',VENICE_DEFAULT))
     if backend=='Gemini API':
         from .gemini_assistant import GeminiEncoder,DEFAULT_MODEL as GEMINI_DEFAULT
         return GeminiEncoder(config.get('gemini_model',GEMINI_DEFAULT))
@@ -301,7 +304,7 @@ Keep aesthetic judgments grounded in visible composition/light/materials. The ho
                 raise ValueError('Image saved, but the reviewer response could not be read: '+str(error)+' Use Review saved image; no new render is needed.') from None
         from .foundry_review import assessment
         result.update(assessment(result,shot['criteria'],value.get('review_tolerance','Balanced'),value.get('physical_tolerance','Balanced'),value.get('passing_score')))
-        result.update(reviewer_backend=review_config['assistant_backend'],reviewer_model=review_config.get('openai_model') if review_config['assistant_backend']=='OpenAI API' else review_config.get('deepseek_model') if review_config['assistant_backend']=='DeepSeek API' else review_config.get('gemini_model') if review_config['assistant_backend']=='Gemini API' else review_config.get('local_model','Automatic'))
+        result.update(reviewer_backend=review_config['assistant_backend'],reviewer_model=review_config.get('openai_model') if review_config['assistant_backend']=='OpenAI API' else review_config.get('deepseek_model') if review_config['assistant_backend']=='DeepSeek API' else review_config.get('gemini_model') if review_config['assistant_backend']=='Gemini API' else review_config.get('venice_model') if review_config['assistant_backend']=='Venice API' else review_config.get('local_model','Automatic'))
         with store.LOCK:
             current=store.read(run_id);attempt=store.attempt_for(current,attempt_id);attempt.update(status='reviewed',review=result,error='')
             if current['status'] not in ('stopped','paused'):current['status']='awaiting_approval'

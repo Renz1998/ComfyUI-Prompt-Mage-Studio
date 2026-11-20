@@ -80,7 +80,10 @@ The production examples target **MOSS Image**, use **Local Qwen** by default and
 | **Local Qwen** | A compatible generation-capable model; vision weights for image references |
 | **OpenAI API** | A provider key entered through the node's masked key panel |
 | **DeepSeek API** | A key and a model supporting your intended inputs |
+| **Venice API** | A Venice key; **DeepSeek V4.1 Flash 1017 Uncensored** is recommended for chat and images. [Setup →](docs/VENICE_API.md) |
 | **Gemini API** | A key and a compatible model |
+
+Venice is supported in Grimoire, Archmage, Foundry planning and image review. Its “Uncensored” label is the provider’s model name; API usage is subject to account access and billing.
 
 Provider choices depend on the node. Foundry lets you choose its production assistant and reviewer separately. API use is billed by the provider; thinking and visual review can increase latency and token use.
 

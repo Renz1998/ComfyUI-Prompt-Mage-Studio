@@ -12,7 +12,8 @@ LOCK = threading.RLock()
 ASSISTANTS=('Local Qwen','DeepSeek V4.1 Flash · Recommended · Text + images','From chat / Local Qwen')
 from .openai_assistant import MODELS as OPENAI_MODELS
 from .gemini_assistant import MODELS as GEMINI_MODELS
-ASSISTANTS=ASSISTANTS+tuple('OpenAI · '+name for name in OPENAI_MODELS)+tuple('Gemini · '+name for name in GEMINI_MODELS)
+from .venice_assistant import MODELS as VENICE_MODELS
+ASSISTANTS=ASSISTANTS+tuple('OpenAI · '+name for name in OPENAI_MODELS)+tuple('Gemini · '+name for name in GEMINI_MODELS)+tuple('Venice · '+name for name in VENICE_MODELS)
 REVIEWERS=('Same as assistant',)+tuple(p for p in ASSISTANTS if p!='From chat / Local Qwen')
 
 
@@ -30,6 +31,7 @@ def review_settings(profile,config):
         result.update(assistant_backend='DeepSeek API',deepseek_model=DEFAULT_MODEL)
     elif profile.startswith('OpenAI · '):result.update(assistant_backend='OpenAI API',openai_model=profile.removeprefix('OpenAI · '))
     elif profile.startswith('Gemini · '):result.update(assistant_backend='Gemini API',gemini_model=profile.removeprefix('Gemini · '))
+    elif profile.startswith('Venice · '):result.update(assistant_backend='Venice API',venice_model=profile.removeprefix('Venice · '))
     return result
 BUILTINS = {
     'single': dict(name='Single scene test', brief='An adult traveler in a green wool cloak studies a map in a lantern-lit wooden inn.', shared_rules='Keep the chosen character, medium and canvas consistent.', review_rules='Check the requested action, major props and camera logic.', shot_count=1),
@@ -120,7 +122,7 @@ def source_settings(conversation_id):
     from .grimoire import memory_path, read_memory, LOCK as CHAT_LOCK
     with CHAT_LOCK:state=read_memory(memory_path(conversation_id))
     settings=state.get('settings',{})
-    allowed=('assistant_backend','local_model','openai_model','deepseek_model','thinking','max_tokens','style_preset','style_notes')
+    allowed=('assistant_backend','local_model','openai_model','deepseek_model','venice_model','thinking','max_tokens','style_preset','style_notes')
     config={key:settings[key] for key in allowed if key in settings}
     config.setdefault('assistant_backend','Local Qwen');config.setdefault('max_tokens',4096)
     context=json.dumps(dict(summary=state['summary'],task=settings.get('task_instructions',''),pinned=settings.get('pinned_facts',''),
@@ -151,6 +153,7 @@ def create(run_id,conversation_id,template_id,brief,shared_rules,review_rules,sh
         config.update(assistant_backend='DeepSeek API',deepseek_model=DEFAULT_MODEL)
     if assistant_profile.startswith('OpenAI · '):config.update(assistant_backend='OpenAI API',openai_model=assistant_profile.removeprefix('OpenAI · '))
     if assistant_profile.startswith('Gemini · '):config.update(assistant_backend='Gemini API',gemini_model=assistant_profile.removeprefix('Gemini · '))
+    if assistant_profile.startswith('Venice · '):config.update(assistant_backend='Venice API',venice_model=assistant_profile.removeprefix('Venice · '))
     from .style_presets import resolve_style
     resolved,_=resolve_style(style_preset,style_notes,secrets.randbelow(2**32))
     config.update(style_preset=resolved,style_notes=style_notes)

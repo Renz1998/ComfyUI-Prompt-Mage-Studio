@@ -24,7 +24,7 @@ export function bindWorkflowEncoders(snapshot) {
     const output = snapshot.output || {};
     for (const [id, node] of Object.entries(output)) {
         if (node.class_type !== ARCHMAGE) continue;
-        if (['OpenAI API','DeepSeek API'].includes(node.inputs.assistant_backend)) {
+        if (['OpenAI API','DeepSeek API','Venice API'].includes(node.inputs.assistant_backend)) {
             delete node.inputs.clip; // Preserve the visible wire, skip its unused execution dependency.
             continue;
         }
@@ -48,7 +48,7 @@ const GROUPS = [
     ['SCENE', ['concepts', 'instructions', 'source_tag_mode', 'length', 'output_format', 'seed', 'control_after_generate']],
     ['CANVAS', ['canvas_source', 'aspect_ratio', 'width', 'height']],
     ['REFERENCE IMAGE · OPTIONAL', ['reference_style', 'image_index', 'image_megapixels', 'resize_mode', 'resize_method']],
-    ['MODEL & PERFORMANCE', ['assistant_backend', 'mage_openai_key', 'mage_deepseek_key', 'deepseek_model', 'deepseek_timeout', 'openai_model', 'openai_key_env', 'openai_timeout', 'local_model', 'thinking', 'max_tokens', 'language_style', 'memory_mode', 'unload_after_generation', 'source_name']],
+    ['MODEL & PERFORMANCE', ['assistant_backend', 'mage_openai_key', 'mage_deepseek_key', 'mage_venice_key', 'venice_model', 'deepseek_model', 'deepseek_timeout', 'openai_model', 'openai_key_env', 'openai_timeout', 'local_model', 'thinking', 'max_tokens', 'language_style', 'memory_mode', 'unload_after_generation', 'source_name']],
 ];
 
 export function arrangeArchmage(node) {
@@ -100,7 +100,8 @@ export function updateArchmageControls(node) {
     const tagsSlot = node.inputs?.find(slot=>slot.name==='source_tags');
     if (tagsSlot) tagsSlot.label = 'DART tags (scene ideas)';
     const backend = get('assistant_backend')?.value;
-    const remote = ['OpenAI API','DeepSeek API'].includes(backend);
+    if (get('venice_model')) get('venice_model').hidden = backend !== 'Venice API';
+    const remote = ['OpenAI API','DeepSeek API','Venice API'].includes(backend);
     for (const name of ['deepseek_model','deepseek_timeout']) if (get(name)) get(name).hidden = backend !== 'DeepSeek API';
     for (const name of ['openai_model', 'openai_timeout']) if (get(name)) get(name).hidden = backend !== 'OpenAI API';
     if (get('openai_key_env')) get('openai_key_env').hidden = true; // Advanced env configuration remains API/workflow-compatible.

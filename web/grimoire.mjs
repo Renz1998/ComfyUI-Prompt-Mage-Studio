@@ -1,9 +1,10 @@
+import { installVeniceKeyWidget, refreshVeniceKeyWidget } from './venice_key.mjs?v=0.1.1';
 import {briefTargets,ensureBriefOutput,announceBrief} from './production_bridge.mjs?v=1.27.0';
 import { isAppliedResponse } from './grimoire_applied.mjs?v=1.22.1';
 import { ensureImageInputs } from './grimoire_images.mjs?v=1.22.1';
 import { installAttachments } from './grimoire_attachments.mjs?v=1.22.1';
 import { ensureCanvasInputs } from './grimoire_sockets.mjs?v=1.22.1';
-import { layoutGrimoire } from './grimoire_layout.mjs?v=1.27.0';
+import { layoutGrimoire } from './grimoire_layout.mjs?v=0.1.1';
 import { chatPrompt, queueChat } from './grimoire_queue.mjs?v=1.22.1';
 import { renderMarkdown } from './grimoire_markdown.mjs?v=1.22.1';
 import { app } from '../../scripts/app.js';
@@ -23,7 +24,7 @@ export function installGrimoire(node) {
     };
     const field = name => node.widgets?.find(w=>w.name===name);
     const fieldDefaults=new Map((node.widgets||[]).map(w=>[w.name,w.value]));
-    const legacyFields=['conversation_id','system_prompt','task_instructions','pinned_facts','message','action','assistant_backend','openai_model','deepseek_model','local_model','thinking','max_tokens','auto_compact','summary_override','output_selection','json_field','unload_after_generation'];
+    const legacyFields=['conversation_id','system_prompt','task_instructions','pinned_facts','message','action','assistant_backend','openai_model','deepseek_model','venice_model','local_model','thinking','max_tokens','auto_compact','summary_override','output_selection','json_field','unload_after_generation'];
     if (!field('conversation_id')?.value) field('conversation_id').value=chapterId();
     const root=document.createElement('section');
     root.style.cssText='padding:14px;background:linear-gradient(135deg,#211a32,#152c31);border:1px solid #ba9957;border-radius:12px;color:#eee;display:flex;flex-direction:column;gap:10px;box-sizing:border-box;height:100%;font:13px sans-serif';
@@ -167,7 +168,7 @@ export function installGrimoire(node) {
     // An unset maximum lets ComfyUI allocate extra node height to the chat.
     node.addDOMWidget('grimoire_chat','GRIMOIRE_CHAT',root,{serialize:false,getMinHeight:()=>560,hideOnZoom:true}).serialize=false;
     const chatWidget=node.widgets?.find(w=>w.name==='grimoire_chat');if(chatWidget)node.widgets=[chatWidget,...node.widgets.filter(w=>w!==chatWidget)];
-    installOpenAIKeyWidget(node,api,layout.keyMount);installDeepSeekKeyWidget(node,api,layout.keyMount);
+    installOpenAIKeyWidget(node,api,layout.keyMount);installDeepSeekKeyWidget(node,api,layout.keyMount);installVeniceKeyWidget(node,api,layout.keyMount);
     function controls() {
         ensureCanvasInputs(node);
         if(field('attachments')){field('attachments').value='[]';field('attachments').serialize=false;}
@@ -182,7 +183,7 @@ export function installGrimoire(node) {
             if(widget.inputEl?.style)widget.inputEl.style.display='none';
         }
         layout?.sync(backend,busy||Boolean(attachmentUI?.busy),Boolean(latest),briefTargets(node).length>0);
-        refreshOpenAIKeyWidget(node);refreshDeepSeekKeyWidget(node);
+        refreshOpenAIKeyWidget(node);refreshDeepSeekKeyWidget(node);refreshVeniceKeyWidget(node);
         const minimum=node.computeSize();
         node.setSize([Math.max(650,node.size[0],minimum[0]),Math.max(node.size[1],minimum[1])]);node.setDirtyCanvas(true,true);
     }

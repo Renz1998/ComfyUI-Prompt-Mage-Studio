@@ -7,7 +7,7 @@ from ..dart.text_output import final_text
 class PromptMageGrimoireBrief(PromptMageGrimoire):
     OUTPUT_NODE=True;DEPRECATED=True;CATEGORY='Prompt Mage/Internal';FUNCTION='publish_brief'
     def publish_brief(self,conversation_id,clip=None,appearance=None,image=None,**settings):
-        config={k:settings[k] for k in ('assistant_backend','local_model','openai_model','deepseek_model','thinking','max_tokens') if k in settings}
+        config={k:settings[k] for k in ('assistant_backend','local_model','openai_model','deepseek_model','venice_model','thinking','max_tokens') if k in settings}
         encoder=None
         def generate(system,prompt):
             nonlocal encoder

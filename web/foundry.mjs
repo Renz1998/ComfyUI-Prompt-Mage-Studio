@@ -4,6 +4,7 @@ import {api} from '../../scripts/api.js';
 import {FOUNDRY,foundryPrompt,queueFoundry} from './foundry_queue.mjs?v=1.28.0';
 import {installReferences} from './foundry_references.mjs?v=1.24.0';
 import {installOpenAIKeyWidget} from './openai_key.mjs?v=1.26.0';
+import {installVeniceKeyWidget} from './venice_key.mjs?v=0.1.1';
 import {installGeminiKeyWidget} from './gemini_key.mjs?v=1.26.0';
 import {installDeepSeekKeyWidget} from './deepseek_key.mjs?v=1.22.1';
 
@@ -48,7 +49,7 @@ export function installFoundry(node,host=app,client=api){
     if(!reviewer.value){reviewer.value='Same as assistant';set('review_profile',reviewer.value);}
     make('small','Use a different vision model to inspect generated images. Same as assistant keeps current behavior. Saved provider keys apply; reviews share the AI call cap. Choices are frozen when you preview the plan.',setup);
     const keyNodes=[],keyMounts={};
-    for(const [provider,install]of [['DeepSeek',installDeepSeekKeyWidget],['OpenAI',installOpenAIKeyWidget],['Gemini',installGeminiKeyWidget]]){
+    for(const [provider,install]of [['DeepSeek',installDeepSeekKeyWidget],['OpenAI',installOpenAIKeyWidget],['Gemini',installGeminiKeyWidget],['Venice',installVeniceKeyWidget]]){
         const mount=make('section','',setup);keyMounts[provider]=mount;
         const n={widgets:[{name:'assistant_backend',value:provider+' API'}],setDirtyCanvas(){node.setDirtyCanvas?.(true,true);}};
         install(n,client,mount);keyNodes.push(n);
@@ -115,7 +116,8 @@ export function installFoundry(node,host=app,client=api){
     function renderPlan(){planArea.replaceChildren();planActions.replaceChildren();editors=[];if(editingBrief){button(planActions,'Cancel editing',async()=>{editingBrief=false;delete node.properties.mage_foundry_editing_run;paint(run);});return;}if(!run?.plan)return;make('h3',run.plan.title,planArea);let projectName;if(!run.approved){make('label','Project name',planArea);projectName=make('input','',planArea);projectName.value=run.plan.title;projectName.setAttribute('aria-label','Project name');make('small','Used for the collection folder unless you chose a custom name.',planArea);}else if(run.output_dir_name){make('p','📁 PromptMage-Foundry/'+run.output_dir_name+'/accepted',planArea);}make('small',`${run.assistant} · ${run.config?.style_preset||'Selected style'} · ${run.passing_score?run.passing_score+'/100 passing score':(run.review_tolerance||'Balanced')+' legacy prompt match'} · ${run.physical_tolerance||'Balanced'} physical inspection · frame ${Math.min(run.current+1,run.shot_count)}/${run.shot_count}`,planArea);make('small',`${run.usage.renders}/${run.limits.renders} render attempts · ${run.usage.calls}/${run.limits.calls} assistant calls`,planArea);
         const overview=make('article','',planArea);make('strong','Planning settings',overview);make('small','Captured for this run · changes to other nodes do not alter an approved plan.',overview);
         const grid=make('div','',overview,'planning-grid'),cfg=run.config||{};
-        const rows=[['Model',cfg.openai_model||cfg.deepseek_model||cfg.gemini_model||cfg.local_model||run.assistant],['Review model',run.review_profile&&run.review_profile!=='Same as assistant'?run.review_profile:run.assistant_profile||run.assistant],['Style',cfg.style_preset||'Model choice'],['Canvas',run.width+' × '+run.height],['Mode',run.run_mode||'Automatic'],['Frames',run.shot_count],['Passing score',run.passing_score!=null?run.passing_score+'/100':'Legacy tolerance'],['Physical inspection',run.physical_tolerance||'Balanced'],['Tries per frame',run.limits.attempts],['Render cap',run.limits.renders],['AI call cap',run.limits.calls],['After failed tries',run.failure_policy||'Pause for review'],['Image references',run.references?.length||0]];
+        const modelField={'Venice API':'venice_model','OpenAI API':'openai_model','DeepSeek API':'deepseek_model','Gemini API':'gemini_model','Local Qwen':'local_model'}[cfg.assistant_backend];
+        const rows=[['Model',cfg[modelField]||run.assistant],['Review model',run.review_profile&&run.review_profile!=='Same as assistant'?run.review_profile:run.assistant_profile||run.assistant],['Style',cfg.style_preset||'Model choice'],['Canvas',run.width+' × '+run.height],['Mode',run.run_mode||'Automatic'],['Frames',run.shot_count],['Passing score',run.passing_score!=null?run.passing_score+'/100':'Legacy tolerance'],['Physical inspection',run.physical_tolerance||'Balanced'],['Tries per frame',run.limits.attempts],['Render cap',run.limits.renders],['AI call cap',run.limits.calls],['After failed tries',run.failure_policy||'Pause for review'],['Image references',run.references?.length||0]];
         if(run.production_brief_source)rows.push(['Grimoire brief',run.production_brief_source.title]);
         for(const [label,value]of rows){const item=make('div','',grid);make('small',label,item);make('strong',String(value??'—'),item);}
         const inputs=make('details','',overview);make('summary','Brief and planning instructions',inputs);for(const [label,value]of [['Brief',run.brief],['Keep consistent',run.shared_rules],['Reviewer instructions',run.review_rules],['Style notes',cfg.style_notes],['Reference guidance',run.reference_instructions]])if(value){make('strong',label,inputs);make('p',value,inputs,'planning-notes');}

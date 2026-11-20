@@ -1,3 +1,4 @@
+from ..dart.venice_assistant import VeniceEncoder, MODELS as VENICE_MODELS, DEFAULT_MODEL as VENICE_DEFAULT
 import copy
 import uuid
 import json
@@ -37,7 +38,7 @@ class PromptMageGrimoire(BaseNode):
             'pinned_facts': ('STRING', {'default':'', 'multiline':True, 'tooltip':'Explicit durable facts. Always sent verbatim. Nothing is silently learned or added here.'}),
             'message': ('STRING', {'default':'Describe an adult traveler reading a map in a lantern-lit inn.', 'multiline':True, 'tooltip':'Next message. Next step sends a continuation request. Regenerate replaces the last answer without adding a new user turn.'}),
             'action': (['Send','Next step','Regenerate','Compact now','Clear conversation','Use latest','Edit message'], {'default':'Use latest','tooltip':'Run/Queue reuses the saved reply by default. Clear removes stored summary/history but keeps your configured system/task/pinned fields. Clear/compact do not run downstream generators.'}),
-            'assistant_backend': (['Local Qwen','OpenAI API','DeepSeek API'], {'default':'Local Qwen','tooltip':'API modes send conversation text and supported image references to the selected provider. Charges apply.'}),
+            'assistant_backend': (['Local Qwen','OpenAI API','DeepSeek API','Venice API'], {'default':'Local Qwen','tooltip':'API modes send conversation text and supported image references to the selected provider. Charges apply.'}),
             'openai_model': (list(MODELS), {'default':DEFAULT_MODEL}),
             'deepseek_model': (list(DS_MODELS), {'default':DS_DEFAULT}),
             'local_model': (['Automatic']+local_models(), {'default':'Automatic'}),
@@ -60,13 +61,14 @@ class PromptMageGrimoire(BaseNode):
             'edit_original': ('STRING', {'default':'','tooltip':'Managed by chat message edits; rejects stale changes.'}),
             'attachments': ('STRING', {'default':'[]','tooltip':'Managed by the chat attachment tray. Server-owned file IDs only; never file contents or local paths.'}),
             'edit_index': ('INT', {'default':-1,'min':-1,'max':100000,'tooltip':'Managed by message actions. Edits branch from this user turn, replacing later turns only after success.'}),
+            'venice_model': (list(VENICE_MODELS), {'default':VENICE_DEFAULT}),
             **{f'image_{i}': ('IMAGE', {'tooltip':'Additional reference image. Connect to reveal the next input; six images total including attachments.'}) for i in range(2,7)},
         }}
 
     def chat(self, conversation_id, system_prompt='', task_instructions='', pinned_facts='', message='', action='Use latest',
              assistant_backend='Local Qwen', openai_model=DEFAULT_MODEL, deepseek_model=DS_DEFAULT, local_model='Automatic',
              thinking=False, max_tokens=4096, auto_compact=True, summary_override='', output_selection='Latest response',
-             json_field='prompt', unload_after_generation=False, clip=None, image=None, appearance=None, width=1024, height=1024, chat_mode='Conversation', style_preset='None (model choice)', style_notes='', edit_index=-1, edit_original='', attachments='[]', image_2=None, image_3=None, image_4=None, image_5=None, image_6=None):
+             json_field='prompt', unload_after_generation=False, clip=None, image=None, appearance=None, width=1024, height=1024, chat_mode='Conversation', style_preset='None (model choice)', style_notes='', edit_index=-1, edit_original='', attachments='[]', image_2=None, image_3=None, image_4=None, image_5=None, image_6=None, venice_model=VENICE_DEFAULT):
         from comfy_execution.graph import ExecutionBlocker
         for value in (system_prompt, task_instructions, pinned_facts, message, summary_override, style_notes):
             if len(value) > 32768:
@@ -88,6 +90,8 @@ class PromptMageGrimoire(BaseNode):
                 encoder = OpenAIEncoder(openai_model)
             elif assistant_backend == 'DeepSeek API':
                 encoder = DeepSeekEncoder(deepseek_model)
+            elif assistant_backend == 'Venice API':
+                encoder = VeniceEncoder(venice_model)
             elif assistant_backend == 'Local Qwen':
                 encoder = load_local_clip(local_model, clip, auto_download=True)
             else:
@@ -197,7 +201,7 @@ class PromptMageGrimoire(BaseNode):
                     report['api_calls'] = encoder.calls
                 state['settings'] = dict(system_prompt=system_prompt, task_instructions=task_instructions,
                     pinned_facts=pinned_facts, assistant_backend=assistant_backend, openai_model=openai_model,
-                    deepseek_model=deepseek_model, local_model=local_model, thinking=thinking, max_tokens=max_tokens,
+                    deepseek_model=deepseek_model, venice_model=venice_model, local_model=local_model, thinking=thinking, max_tokens=max_tokens,
                     auto_compact=auto_compact, output_selection=output_selection, json_field=json_field,
                     chat_mode=chat_mode, style_preset=style_preset, style_notes=style_notes)
                 save_memory(path, state)

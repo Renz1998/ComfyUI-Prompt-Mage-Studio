@@ -1,46 +1,130 @@
-# Prompt Mage Studio · local beta
+![Prompt Mage Studio — a spellbook for your next scene](assets/banner.svg)
 
-Independent Grimoire, Foundry, Archmage, Spell Scroll, Appearance Overrides, Resolution and image upload nodes. DART tag nodes remain in the original Prompt Mage package.
+# Prompt Mage Studio for ComfyUI
 
-## Grimoire · your creative spellbook
+**Talk through an idea. Choose your prompt. Forge a collection.**
 
-Plan scenes in a saved conversation, refine the details, then apply the reply you want to use. Grimoire includes Markdown messages, style presets, image/file attachments, optional thinking, and copy/edit/retry controls. System instructions, project instructions and pinned facts have separate fields.
+Grimoire brings persistent, reference-aware conversations into ComfyUI. Refine a scene with your assistant, apply your favorite reply, or hand an agreed brief to Foundry to plan, render and review a series of images. Shared appearance recipes and visual styles keep your creative direction close at hand.
 
-![Grimoire chat with Markdown and message actions](assets/screenshots/grimoire-chat.jpg)
+[Quickstart](QUICKSTART.md) · [Workflows](workflows/README.md) · [Migration](docs/MIGRATION.md) · [Testing & limits](TESTING.md) · [Community](https://github.com/Renz1998/ComfyUI-Prompt-Mage-Studio/issues) · [Support](#help-build-the-studio) · [Credits](CREDITS.md)
 
-*Captured in ComfyUI using an authored demo conversation for interface illustration. No private chats or API keys are shown. Click an image to view it at full size.*
+**Public beta · Foundry is experimental · Comfy Registry publication pending.** Install from GitHub for now. DART tag tools remain in [the original Prompt Mage](https://github.com/Renz1998/ComfyUI-Prompt-Mage).
+
+## Meet Grimoire, your creative spellbook
+
+![Grimoire conversation with Markdown and message actions](assets/screenshots/grimoire-chat.jpg)
+
+*Real ComfyUI interface with an authored demo conversation. No private chats or API keys are shown. Open either screenshot to see it at full size.*
+
+- **Keep the conversation.** Saved chats, pinned facts and conversation compaction help carry a project across sessions.
+- **Bring references.** Drop images and files into chat, or connect image inputs. Reuse an Appearance Overrides recipe for your subject.
+- **Find the look.** Choose photographic, illustration and anime styles, add your own notes, and change direction as you chat.
+- **Use familiar chat controls.** Markdown, code blocks, copy, edit and retry sit beside your messages. Optional thinking is available with compatible models.
+- **Decide what gets generated.** Apply a reply with **Use this prompt**. Further conversation does not silently replace that selection.
 
 <details>
-<summary>Full Grimoire node, sockets and chat controls</summary>
+<summary><strong>See the full Grimoire node and connections</strong></summary>
 
 ![Complete Grimoire node in ComfyUI](assets/screenshots/grimoire-node.jpg)
 
 </details>
 
-Use **Use this prompt** to apply a reply to Spell Scroll. To turn an agreed project into a production plan, connect **production_brief** to Foundry and choose **Send brief → Foundry**. Chatting alone does not start image generation.
+## From a conversation to a collection
 
-## Status
+**Grimoire → Spell Scroll → your image workflow**
 
-Real ComfyUI CPU startup with both packs installed passed: 13 Studio and 32 original node registrations, with separate API namespaces responding. Additional browser and native GPU chat checks passed on 2026-11-18; see TESTING.md for exact coverage and remaining limits. This beta is not published to Comfy Registry.
+Chat freely, choose **Use this prompt**, then generate with the applied snapshot. Normal workflow runs reuse that prompt without making another chat request.
 
-## Installation
+**Grimoire → production brief → Foundry → render & review**
 
-Clone the separate repository inside your ComfyUI `custom_nodes` directory:
+Agree on a project in chat, then choose **Send brief → Foundry** with the dedicated connection in place. Review the plan before approving it. In automatic mode, Foundry renders, reviews, retries when needed and advances when a frame passes the configured checks. Manual controls remain available.
+
+Foundry includes reference images, style choices, IG carousel and other script templates, adjustable passing scores, anatomy and scene-cohesion checks, and readable collection folders. Choose a separate image-review model when you want a different assistant to assess the results.
+
+**Review scores are assistant judgments, not guarantees.** Inspect accepted images before posting. Retry and API-call caps bound a run; they do not promise a price or perfect output.
+
+## Install
+
+Run these commands from your ComfyUI folder. Use the **Python environment that runs ComfyUI** for the final command:
 
 ```sh
+cd custom_nodes
 git clone https://github.com/Renz1998/ComfyUI-Prompt-Mage-Studio.git
+python -m pip install -r ComfyUI-Prompt-Mage-Studio/requirements.txt
 ```
 
-Using the Python environment that runs ComfyUI, install `requirements.txt` from the cloned folder. Restart ComfyUI when idle and refresh the browser. Keep the [original Prompt Mage pack](https://github.com/Renz1998/ComfyUI-Prompt-Mage) installed for old workflows and DART tools. Studio display names begin Prompt Mage Studio. If you installed the beta ZIP already, keep that folder as a backup outside `custom_nodes` before cloning; do not install two Studio copies.
+Restart ComfyUI when idle, refresh your browser, and search **Prompt Mage Studio** or **Grimoire**. [Windows portable setup →](QUICKSTART.md)
 
-Start with workflows/grimoire-to-foundry.json. Select your installed model filenames. Models are reused from ComfyUI; no weights or keys are included. Local Qwen is the default, with optional API providers and independent review model selection.
+Keep the original Prompt Mage pack for existing workflows and DART tools. Studio has separate node IDs and storage, so both packs can coexist. If you installed the Studio beta ZIP, move that copy outside `custom_nodes` before cloning to avoid duplicate Studio installations.
 
-## Copy existing data and workflows
+## Pick your starting point
 
-Run tools/migrate.py using the ComfyUI Python environment with --user-directory pointing to your real ComfyUI user directory. The default is a dry run. Add --apply to copy missing records and create separate Studio workflow files. Add --include-keys only if you also want to copy provider credentials on this trusted machine. Originals are retained and existing destination files are skipped. Back up your user directory first. Closed/idle ComfyUI is recommended for a consistent snapshot.
+| You want to… | Start here |
+| --- | --- |
+| Discuss a scene and choose a prompt | **Grimoire + Spell Scroll** |
+| Turn a conversation into a collection | [Grimoire → Foundry workflow](workflows/grimoire-to-foundry.json) |
+| Test rendering and review on one frame | [Single-frame Foundry workflow](workflows/experimental/01-foundry-single-frame-moss.json) |
+| Compose directly from text or a reference | **Archmage** |
+| Reuse a subject's appearance in prompts | **Appearance Overrides** |
+| Share one canvas size across the graph | **Resolution**, including 4:5 |
+| Upload local files or a folder to the server | **Upload Images** |
 
-Studio uses prompt_mage_studio for saved chats, keys, briefs and runs. Workflows receive new node IDs only for Studio-owned types; DART nodes stay unchanged and need the original pack. Local paths in historical workflows may still need manual adjustment when transferring to another machine.
+[Workflow setup and requirements →](workflows/README.md)
 
-## Packaging
+The production examples target **MOSS Image**, use **Local Qwen** by default and include no character LoRA. Select your installed model filenames and install the workflow's required nodes before running. Weights and API keys are not bundled.
 
-Repository: [Renz1998/ComfyUI-Prompt-Mage-Studio](https://github.com/Renz1998/ComfyUI-Prompt-Mage-Studio). Registry ID proposed: prompt-mage-studio; publisher: renz1998. Registry publication remains pending. GitHub availability does not imply a Comfy Registry listing. The existing package and its Registry listing are unchanged. See LICENSE and CREDITS.md for upstream attribution, including the original ComfyUI-Dart creators.
+## Choose your assistant
+
+| Option | What you need |
+| --- | --- |
+| **Local Qwen** | A compatible generation-capable model; vision weights for image references |
+| **OpenAI API** | A provider key entered through the node's masked key panel |
+| **DeepSeek API** | A key and a model supporting your intended inputs |
+| **Gemini API** | A key and a compatible model |
+
+Provider choices depend on the node. Foundry lets you choose its production assistant and reviewer separately. API use is billed by the provider; thinking and visual review can increase latency and token use.
+
+Keys are saved separately in the ComfyUI server's user directory, outside workflow JSON. Chats and memory also live on that server. Use trusted hosting and persistent storage on a pod. Attachments and API requests may send material to your selected provider.
+
+Model sources: [Qwen checkpoints](https://huggingface.co/Qwen) · [MOSS Image and its guide](https://github.com/OpenMOSS/MOSS-Image). Use the exact checkpoint required by your workflow. A text-only or stripped encoder may not support chat or vision generation.
+
+## Already using Prompt Mage?
+
+Studio includes a **dry-run-first migration tool** to copy saved data and create separate workflow copies. Originals are preserved, existing destinations are skipped, and credential copying is opt-in.
+
+[Copy chats, runs and workflows →](docs/MIGRATION.md)
+
+## Beta status and practical limits
+
+Local checks covered both packs installed together, browser controls, Grimoire GPU chat and focused Grimoire/Foundry tests. [Read the validation record](TESTING.md) for exact coverage.
+
+- The supplied Foundry workflows compose MOSS prompts; support for every image model or graph is not implied.
+- Valid JSON and bounding boxes do not guarantee exact diffusion placement or anatomical accuracy.
+- Appearance Overrides changes descriptions; it does not load a character LoRA or edit pixels.
+- RunPod deployment has not been validated for this beta. Model paths, dependencies and persistent storage need setup on each server.
+- Proposed Registry ID: `prompt-mage-studio`. Publication remains pending.
+
+## Help build the Studio
+
+Have a useful workflow, a confusing control or a reproducible bug? **[Share it on GitHub](https://github.com/Renz1998/ComfyUI-Prompt-Mage-Studio/issues/new)**. Include your models, settings and reproduction steps. Remove keys and private chats before sharing logs or screenshots.
+
+If Studio helps your work, a star or optional contribution supports development:
+
+**[☕ Ko-fi](https://ko-fi.com/renzuwu)** · **[PayPal](https://paypal.me/luckyrenz1998)**
+
+<details>
+<summary>Support with USDT · TRON / TRC20</summary>
+
+Use the code block's copy button. Check the TRON network before sending.
+
+```text
+TUggk9S4aDDyT7HxrEjqCDxFPXgEr4okW8
+```
+
+</details>
+
+## Built on the original creators' work
+
+Maintained by [Renz1998](https://github.com/Renz1998), built from [nkchocoai/ComfyUI-Dart](https://github.com/nkchocoai/ComfyUI-Dart) and its contributors. Qwen, OpenMOSS, Hugging Face and ComfyUI retain credit for their models, formats and runtime. Studio is an independent community project.
+
+[Full credits](CREDITS.md) · [GPL-3.0 license](LICENSE) · [Original Prompt Mage / DART tools](https://github.com/Renz1998/ComfyUI-Prompt-Mage)

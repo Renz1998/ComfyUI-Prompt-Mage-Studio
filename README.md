@@ -2,6 +2,23 @@
 
 Independent Grimoire, Foundry, Archmage, Spell Scroll, Appearance Overrides, Resolution and image upload nodes. DART tag nodes remain in the original Prompt Mage package.
 
+## Grimoire · your creative spellbook
+
+Plan scenes in a saved conversation, refine the details, then apply the reply you want to use. Grimoire includes Markdown messages, style presets, image/file attachments, optional thinking, and copy/edit/retry controls. System instructions, project instructions and pinned facts have separate fields.
+
+![Grimoire chat with Markdown and message actions](assets/screenshots/grimoire-chat.jpg)
+
+*Captured in ComfyUI using an authored demo conversation for interface illustration. No private chats or API keys are shown. Click an image to view it at full size.*
+
+<details>
+<summary>Full Grimoire node, sockets and chat controls</summary>
+
+![Complete Grimoire node in ComfyUI](assets/screenshots/grimoire-node.jpg)
+
+</details>
+
+Use **Use this prompt** to apply a reply to Spell Scroll. To turn an agreed project into a production plan, connect **production_brief** to Foundry and choose **Send brief → Foundry**. Chatting alone does not start image generation.
+
 ## Status
 
 Real ComfyUI CPU startup with both packs installed passed: 13 Studio and 32 original node registrations, with separate API namespaces responding. Additional browser and native GPU chat checks passed on 2026-11-18; see TESTING.md for exact coverage and remaining limits. This beta is not published to Comfy Registry.

@@ -3,5 +3,7 @@ __pycache__/
 .venv/
 .env
 assets/demo.png
-assets/screenshots/
+assets/screenshots/*
+!assets/screenshots/grimoire-chat.jpg
+!assets/screenshots/grimoire-node.jpg
 *.log

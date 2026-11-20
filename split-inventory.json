@@ -1,0 +1,147 @@
+{
+  "source": "Renz1998/ComfyUI-Prompt-Mage",
+  "source_version": "1.28.0",
+  "proposed_registry_id": "prompt-mage-studio",
+  "status": "scaffold; not installed or registered",
+  "studio_modules": [
+    {
+      "module": "py/nodes/grimoire.py",
+      "classes": [
+        "PromptMageGrimoire",
+        "PromptMageGrimoireTurn"
+      ],
+      "imports": [
+        "import copy",
+        "import uuid",
+        "import json",
+        "from .base import BaseNode",
+        "from ..dart.grimoire import LOCK, memory_path, read_memory, save_memory, transcript, select_output",
+        "from ..dart.openai_assistant import OpenAIEncoder, MODELS, DEFAULT_MODEL, execute_generation",
+        "from ..dart.deepseek_assistant import DeepSeekEncoder, MODELS as DS_MODELS, DEFAULT_MODEL as DS_DEFAULT",
+        "from ..dart.local_assistant import local_models, load_local_clip",
+        "from ..dart.appearance import override_instructions",
+        "from ..dart.vision import prepare_caption_image, caption_image",
+        "from ..dart.memory import offload_after",
+        "from ..dart.text_output import final_text",
+        "from ..dart.moss import read_layout",
+        "from ..dart.style_presets import STYLE_OPTIONS",
+        "from ..dart.grimoire_attachments import parse_attachment_ids, load_attachment, attachment_image",
+        "from ..dart.grimoire_prompt import response_contract, extract_response, response_output_mode, DEFAULT_SYSTEM, effective_system, prepare_turn",
+        "from comfy_execution.graph import ExecutionBlocker"
+      ]
+    },
+    {
+      "module": "py/nodes/spell_scroll.py",
+      "classes": [
+        "PromptMageSpellScroll"
+      ],
+      "imports": [
+        "import json",
+        "from .base import BaseNode",
+        "from ..dart.spell_scroll import active_scroll, prompt_from_scroll, LOCK"
+      ]
+    },
+    {
+      "module": "py/nodes/foundry.py",
+      "classes": [
+        "PromptMageFoundry",
+        "PromptMageFoundryPlan",
+        "PromptMageFoundryReviewSaved",
+        "PromptMageFoundryReviewOutput"
+      ],
+      "imports": [
+        "import json",
+        "from .base import BaseNode",
+        "from ..dart import foundry as store",
+        "from ..dart import foundry_ai as ai",
+        "from ..dart.style_presets import STYLE_OPTIONS",
+        "from ..dart.foundry_runner import assert_can_plan",
+        "from comfy_execution.graph import ExecutionBlocker",
+        "from comfy_execution.graph import ExecutionBlocker",
+        "from comfy_execution.graph import ExecutionBlocker",
+        "from ..dart.production_brief import read"
+      ]
+    },
+    {
+      "module": "py/nodes/production_brief.py",
+      "classes": [
+        "PromptMageGrimoireBrief"
+      ],
+      "imports": [
+        "from .grimoire import PromptMageGrimoire",
+        "from ..dart.production_brief import compile_brief",
+        "from ..dart.foundry_ai import encoder_for",
+        "from ..dart.openai_assistant import execute_generation",
+        "from ..dart.text_output import final_text",
+        "from comfy_execution.graph import ExecutionBlocker",
+        "from ..dart.memory import offload_after"
+      ]
+    },
+    {
+      "module": "py/nodes/appearance.py",
+      "classes": [
+        "DanbooruTagsTransformerAppearanceOverrides"
+      ],
+      "imports": [
+        "from .base import BaseNode",
+        "from ..dart.appearance import TRAITS, KEEP, override_instructions"
+      ]
+    },
+    {
+      "module": "py/nodes/resolution.py",
+      "classes": [
+        "PromptMageResolution"
+      ],
+      "imports": [
+        "import math",
+        "from .base import BaseNode"
+      ]
+    },
+    {
+      "module": "py/nodes/image_batch.py",
+      "classes": [
+        "DanbooruTagsTransformerImageBatchSelector",
+        "DanbooruTagsTransformerImageBatchUpload"
+      ],
+      "imports": [
+        "from pathlib import Path",
+        "import fnmatch",
+        "import json",
+        "import re",
+        "from .base import BaseNode",
+        "import folder_paths",
+        "from PIL import Image, ImageOps",
+        "import numpy as np",
+        "import torch"
+      ]
+    },
+    {
+      "module": "py/nodes/archmage.py",
+      "classes": [
+        "PromptMageArchmageBeta"
+      ],
+      "imports": [
+        "from ..dart.deepseek_assistant import DeepSeekEncoder, MODELS as DEEPSEEK_MODELS, DEFAULT_MODEL as DEEPSEEK_DEFAULT",
+        "from ..dart.openai_assistant import execute_generation, OpenAIEncoder, MODELS, DEFAULT_MODEL",
+        "import json",
+        "import re",
+        "from .base import BaseNode",
+        "from .scene_composer import PromptMageSceneComposer, VISIBLE_EXPRESSIONS",
+        "from ..dart.local_assistant import load_local_clip, local_models",
+        "from ..dart.memory import offload_after, prepare_assistant_memory",
+        "from ..dart.scene_variation import variation",
+        "from ..dart.assistant import language_guidance, LANGUAGE_STYLES",
+        "from ..dart.appearance import override_instructions, check_layout_appearance, AppearanceMismatch",
+        "from ..dart.size_edit import edit_layout",
+        "from ..dart.vision import prepare_caption_image, caption_image, parse_caption_json, RESIZE_METHODS",
+        "from ..dart.moss import canvas_size, compile_layout, layout_instruction",
+        "from ..dart.text_output import final_text, ThinkingBudgetError",
+        "from ..dart.style_presets import STYLE_OPTIONS, resolve_style, style_directions",
+        "from ..dart.source_tags import TAG_MODES, screen_source_tags",
+        "from ..dart.tag_filters import check_recipe, clean_text",
+        "from comfy_execution.graph import ExecutionBlocker",
+        "from ..dart.moss import layout_diagnostics"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,6 @@
+transformers>=4.46,<6
+torch>=2.4
+huggingface-hub>=0.26
+pypdf>=5,<7
+Pillow
+aiohttp

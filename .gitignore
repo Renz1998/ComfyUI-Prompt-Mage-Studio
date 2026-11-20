@@ -1,0 +1,7 @@
+__pycache__/
+*.py[cod]
+.venv/
+.env
+assets/demo.png
+assets/screenshots/
+*.log

@@ -1,0 +1,17 @@
+[project]
+name = "prompt-mage-studio"
+version = "0.1.0"
+description = "Grimoire conversations and Foundry production for ComfyUI."
+requires-python = ">=3.10"
+dependencies = ["transformers>=4.46,<6", "torch>=2.4", "huggingface-hub>=0.26", "pypdf>=5,<7"]
+license = {file = "LICENSE"}
+readme = "README.md"
+
+[project.urls]
+Repository = "https://github.com/Renz1998/ComfyUI-Prompt-Mage-Studio"
+Documentation = "https://github.com/Renz1998/ComfyUI-Prompt-Mage-Studio/blob/main/README.md"
+
+[tool.comfy]
+DisplayName = "Prompt Mage Studio"
+PublisherId = "renz1998"
+Icon = "https://raw.githubusercontent.com/Renz1998/ComfyUI-Prompt-Mage-Studio/main/assets/icon.svg"
